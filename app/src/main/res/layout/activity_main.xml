@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:background="#6B62FE"
+    android:weightSum="10"
+    android:paddingBottom="100dp"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_marginHorizontal="20dp"
+        android:weightSum="10"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <TextView
+            android:textColor="#000"
+            android:textSize="15dp"
+            android:gravity="start"
+            android:text="Trial 11 of 12"
+            android:layout_weight="4"
+            android:textFontWeight="700"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:textColor="#000"
+            android:gravity="end"
+            android:textSize="15dp"
+            android:text="SCORE 1202"
+            android:textFontWeight="500"
+            android:layout_weight="4"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_gravity="center"
+        android:layout_weight="9"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+        <GridView
+            android:layout_marginHorizontal="30dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:id="@+id/myGridView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:columnWidth="100dp"
+            android:numColumns="6"
+            android:verticalSpacing="4dp"
+            android:horizontalSpacing="4dp"
+            android:stretchMode="columnWidth"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
