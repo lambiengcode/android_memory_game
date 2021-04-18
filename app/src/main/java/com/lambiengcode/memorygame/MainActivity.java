@@ -1,7 +1,6 @@
 package com.lambiengcode.memorygame;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,16 +9,24 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
+
 import com.lambiengcode.memorygame.ui.Adapter.TileAdapter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
+    public static int time = 3;
+    Timer timer;
     GridView gridView;
+    TextView mTime;
     TileAdapter adapter;
-    List<Boolean> values;
+    List<Boolean> results;
     int tiles = 3, wins = 0, lose = 0;
 
     @Override
@@ -27,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Set statusBar color transparent
+        // Set status bar color transparent
         Window window = getWindow();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -40,30 +47,50 @@ public class MainActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                values.set(position, !values.get(position));
-                adapter.notifyDataSetChanged();
+                if(time == 0) {
+                    results.set(position, !results.get(position));
+                    adapter.notifyDataSetChanged();
+                }
             }
         });
     }
 
     private void Init() {
+        timer = new Timer();
         gridView = findViewById(R.id.myGridView);
-        values = new ArrayList<>();
+        mTime = findViewById(R.id.mTime);
+        results = new ArrayList<>();
         // Make a random tiles
         createRandomList();
-        adapter = new TileAdapter(this, values);
+        adapter = new TileAdapter(this, results);
         gridView.setAdapter(adapter);
+        startTimer();
     }
 
     private void createRandomList() {
         Random random = new Random();
-        values.addAll(Collections.nCopies(36, Boolean.FALSE));
+        results.addAll(Collections.nCopies(36, false));
         for (int i = 0; i < tiles; i++) {
             int ranNum = random.nextInt(36);
-            while(values.get(ranNum)) {
+            while (results.get(ranNum)) {
                 ranNum = random.nextInt();
             }
-            values.set(ranNum, true);
+            results.set(ranNum, true);
         }
+    }
+
+    private void startTimer() {
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                if (time == 0) {
+                    timer.cancel();
+                    timer.purge();
+                    mTime.setVisibility(View.INVISIBLE);
+                } else {
+                    time--;
+                    mTime.setText(String.valueOf(time));
+                }
+            }
+        }, 1000, 1000);
     }
 }

@@ -6,13 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="#6B62FE"
+    android:background="#1E1E1E"
     android:weightSum="10"
     android:paddingBottom="100dp"
     android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginHorizontal="30dp"
         android:weightSum="10"
         android:orientation="horizontal"
         android:layout_weight="1"
@@ -20,12 +21,13 @@
         android:layout_height="0dp">
 
         <TextView
-            android:textColor="#000"
-            android:textSize="15dp"
+            android:id="@+id/mLevel"
+            android:textColor="#CFF1F8"
+            android:textSize="18dp"
             android:gravity="start"
-            android:text="Trial 11 of 12"
+            android:text="Level: 3"
             android:layout_weight="4"
-            android:textFontWeight="700"
+            android:textStyle="bold|italic"
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
 
@@ -35,25 +37,37 @@
             android:layout_height="match_parent"/>
 
         <TextView
-            android:textColor="#000"
+            android:id="@+id/mScore"
+            android:textColor="#CFF1F8"
             android:gravity="end"
-            android:textSize="15dp"
-            android:text="SCORE 1202"
-            android:textFontWeight="500"
+            android:textSize="18dp"
+            android:text="Score: 212"
+            android:textStyle="bold|italic"
             android:layout_weight="4"
             android:layout_width="0dp"
             android:layout_height="match_parent"/>
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/mTime"
+        android:textColor="#ffebf6"
+        android:gravity="center"
+        android:textSize="40dp"
+        android:text="3"
+        android:textStyle="bold|italic"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_gravity="center"
-        android:layout_weight="9"
+        android:layout_weight="8"
         android:layout_width="match_parent"
         android:layout_height="0dp">
         <GridView
+            android:layout_marginTop="24dp"
             android:layout_marginHorizontal="30dp"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             android:id="@+id/myGridView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
