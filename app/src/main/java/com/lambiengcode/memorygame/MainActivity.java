@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lambiengcode.memorygame.ui.Adapter.TileAdapter;
 
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     GridView gridViewShow, gridViewResult;
     TextView mTime;
     TileAdapter adapterResult, adapterShow;
-    List<Boolean> results, shows;
+    public static List<Boolean> results, shows;
     int tiles = 3, wins = 0, lose = 0;
 
     @Override
@@ -49,8 +50,15 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(time == 0) {
-                    shows.set(position, !results.get(position));
-                    adapterShow.notifyDataSetChanged();
+                    if (results.get(position)) { // Correct
+                        shows.set(position, !shows.get(position));
+                        adapterShow.notifyDataSetChanged();
+                        // Check Complete
+                    }else { // Incorrect
+                        // Restart Game
+                        Toast.makeText(MainActivity.this, "OMG! Wrong answer, play again!",
+                                Toast.LENGTH_LONG).show();
+                    }
                 }
             }
         });
@@ -96,9 +104,6 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     time--;
                     mTime.setText(String.valueOf(time));
-                    if (time == 1) {
-                        //gridViewShow.setVisibility(View.VISIBLE);
-                    }
                 }
             }
         }, 1000, 1000);
