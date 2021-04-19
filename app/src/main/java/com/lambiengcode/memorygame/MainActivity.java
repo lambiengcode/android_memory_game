@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                             mScore++;
 
                             // Check chain wins
-                            if(wins == 3) {
+                            if(wins == 3 && tiles < 10) {
                                 tiles++;
                                 wins = 0;
                             }
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
         tvScores = findViewById(R.id.mScore);
         results = new ArrayList<>();
         shows = new ArrayList<>();
+
         // Make a random tiles
         CreateRandomList();
         ChangedTextView();
@@ -111,12 +113,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void RestartGame() {
-        ChangedTextView();
-        CreateRandomList();
-        gridViewResult.setVisibility(View.VISIBLE);
-        adapterShow.notifyDataSetChanged();
-        adapterResult.notifyDataSetChanged();
-        StartTimer();
+        try {
+            ChangedTextView();
+            CreateRandomList();
+            gridViewResult.setVisibility(View.VISIBLE);
+            adapterShow.notifyDataSetChanged();
+            adapterResult.notifyDataSetChanged();
+            StartTimer();
+        } catch (Exception e) {
+            Log.d("ERROR", e.toString());
+        }
     }
 
     private void CreateRandomList() {
@@ -128,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < tiles; i++) {
             int ranNum = random.nextInt(36);
             while (results.get(ranNum)) {
-                ranNum = random.nextInt();
+                ranNum = random.nextInt(36);
             }
             results.set(ranNum, true);
         }
