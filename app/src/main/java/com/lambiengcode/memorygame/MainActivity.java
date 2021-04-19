@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -23,10 +24,10 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity {
     public static int time = 3;
     Timer timer;
-    GridView gridView;
+    GridView gridViewShow, gridViewResult;
     TextView mTime;
-    TileAdapter adapter;
-    List<Boolean> results;
+    TileAdapter adapterResult, adapterShow;
+    List<Boolean> results, shows;
     int tiles = 3, wins = 0, lose = 0;
 
     @Override
@@ -44,12 +45,12 @@ public class MainActivity extends AppCompatActivity {
         // Initial
         Init();
 
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        gridViewShow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(time == 0) {
-                    results.set(position, !results.get(position));
-                    adapter.notifyDataSetChanged();
+                    shows.set(position, !results.get(position));
+                    adapterShow.notifyDataSetChanged();
                 }
             }
         });
@@ -57,19 +58,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void Init() {
         timer = new Timer();
-        gridView = findViewById(R.id.myGridView);
+        gridViewShow = findViewById(R.id.myGridView);
+        gridViewResult = findViewById(R.id.myGridViewResult);
         mTime = findViewById(R.id.mTime);
         results = new ArrayList<>();
+        shows = new ArrayList<>();
         // Make a random tiles
         createRandomList();
-        adapter = new TileAdapter(this, results);
-        gridView.setAdapter(adapter);
+        adapterResult = new TileAdapter(this, results);
+        adapterShow = new TileAdapter(this, shows);
+        gridViewShow.setAdapter(adapterShow);
+        gridViewResult.setAdapter(adapterResult);
         startTimer();
     }
 
     private void createRandomList() {
         Random random = new Random();
         results.addAll(Collections.nCopies(36, false));
+        shows.addAll(results);
         for (int i = 0; i < tiles; i++) {
             int ranNum = random.nextInt(36);
             while (results.get(ranNum)) {
@@ -86,9 +92,13 @@ public class MainActivity extends AppCompatActivity {
                     timer.cancel();
                     timer.purge();
                     mTime.setVisibility(View.INVISIBLE);
+                    gridViewResult.setVisibility(View.INVISIBLE);
                 } else {
                     time--;
                     mTime.setText(String.valueOf(time));
+                    if (time == 1) {
+                        //gridViewShow.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         }, 1000, 1000);

@@ -15,7 +15,7 @@ import java.util.List;
 
 public class TileAdapter extends BaseAdapter {
     Context context;
-    List<Boolean> results, shows;
+    List<Boolean> results;
 
     public TileAdapter(Context context, List<Boolean> results) {
         this.context = context;
