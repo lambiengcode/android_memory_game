@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,7 +12,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.lambiengcode.memorygame.ui.Adapter.TileAdapter;
+import com.lambiengcode.memorygame.ui.Adapters.TileAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,12 +23,11 @@ import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     public static int time = 3;
-    Timer timer;
     GridView gridViewShow, gridViewResult;
-    TextView mTime;
+    TextView mTime, tvTiles, tvScores;
     TileAdapter adapterResult, adapterShow;
-    public static List<Boolean> results, shows;
-    int tiles = 3, wins = 0, lose = 0;
+    List<Boolean> results, shows;
+    int tiles = 3, wins = 0, loses = 0, mScore = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +52,40 @@ public class MainActivity extends AppCompatActivity {
                         shows.set(position, !shows.get(position));
                         adapterShow.notifyDataSetChanged();
                         // Check Complete
+                        if(results.equals(shows)) {
+                            Toast.makeText(MainActivity.this, "Bingo!!!",
+                                    Toast.LENGTH_LONG).show();
+                            wins++;
+                            loses = 0;
+                            // Calculator point
+                            mScore++;
+
+                            // Check chain wins
+                            if(wins == 3) {
+                                tiles++;
+                                wins = 0;
+                            }
+
+                            // Restart game
+                            RestartGame();
+                        }
                     }else { // Incorrect
                         // Restart Game
                         Toast.makeText(MainActivity.this, "OMG! Wrong answer, play again!",
                                 Toast.LENGTH_LONG).show();
+                        loses++;
+                        wins = 0;
+                        // Calculator point
+                        if(mScore != 0) mScore--;
+
+                        // Check chain loses
+                        if (loses == 3 && tiles > 3) {
+                            tiles--;
+                            loses = 0;
+                        }
+
+                        // Restart game
+                        RestartGame();
                     }
                 }
             }
@@ -65,23 +93,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void Init() {
-        timer = new Timer();
         gridViewShow = findViewById(R.id.myGridView);
         gridViewResult = findViewById(R.id.myGridViewResult);
         mTime = findViewById(R.id.mTime);
+        tvTiles = findViewById(R.id.mLevel);
+        tvScores = findViewById(R.id.mScore);
         results = new ArrayList<>();
         shows = new ArrayList<>();
         // Make a random tiles
-        createRandomList();
+        CreateRandomList();
+        ChangedTextView();
         adapterResult = new TileAdapter(this, results);
         adapterShow = new TileAdapter(this, shows);
         gridViewShow.setAdapter(adapterShow);
         gridViewResult.setAdapter(adapterResult);
-        startTimer();
+        StartTimer();
     }
 
-    private void createRandomList() {
+    private void RestartGame() {
+        ChangedTextView();
+        CreateRandomList();
+        gridViewResult.setVisibility(View.VISIBLE);
+        adapterShow.notifyDataSetChanged();
+        adapterResult.notifyDataSetChanged();
+        StartTimer();
+    }
+
+    private void CreateRandomList() {
         Random random = new Random();
+        results.clear();
+        shows.clear();
         results.addAll(Collections.nCopies(36, false));
         shows.addAll(results);
         for (int i = 0; i < tiles; i++) {
@@ -93,7 +134,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void startTimer() {
+    private void StartTimer() {
+        Timer timer = new Timer();
+        time = 3;
+        mTime.setVisibility(View.VISIBLE);
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 if (time == 0) {
@@ -107,5 +151,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }, 1000, 1000);
+    }
+
+    private void ChangedTextView() {
+        tvTiles.setText("Tiles: " + String.valueOf(tiles));
+        tvScores.setText("Score: " + String.valueOf(mScore));
     }
 }

@@ -1,4 +1,4 @@
-package com.lambiengcode.memorygame.ui.Adapter;
+package com.lambiengcode.memorygame.ui.Adapters;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.lambiengcode.memorygame.MainActivity;
-
-import java.util.Collections;
 import java.util.List;
 
 public class TileAdapter extends BaseAdapter {
