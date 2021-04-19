@@ -160,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void ChangedTextView() {
-        tvTiles.setText("Tiles: " + String.valueOf(tiles));
-        tvScores.setText("Score: " + String.valueOf(mScore));
+        tvTiles.setText("Tiles: " + tiles);
+        tvScores.setText("Score: " + mScore);
     }
 }
