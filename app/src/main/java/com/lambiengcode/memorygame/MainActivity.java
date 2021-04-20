@@ -2,9 +2,11 @@ package com.lambiengcode.memorygame;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -25,10 +27,11 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity {
     public static int time = 3;
     GridView gridViewShow, gridViewResult;
-    TextView mTime, tvTiles, tvScores;
+    TextView tvTime, tvTiles, tvScores;
     TileAdapter adapterResult, adapterShow;
     List<Boolean> results, shows;
     int tiles = 3, wins = 0, loses = 0, mScore = 0;
+    public static double widthScreen = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +53,11 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if(time == 0) {
                     if (results.get(position)) { // Correct
-                        shows.set(position, !shows.get(position));
+                        shows.set(position, true);
                         adapterShow.notifyDataSetChanged();
                         // Check Complete
                         if(results.equals(shows)) {
-                            Toast.makeText(MainActivity.this, "Bingo!!!",
+                            Toast.makeText(MainActivity.this, "Correct! Next Round...",
                                     Toast.LENGTH_LONG).show();
                             wins++;
                             loses = 0;
@@ -62,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                             mScore++;
 
                             // Check chain wins
-                            if(wins == 3 && tiles < 10) {
+                            if(wins == 3 && tiles < 12) {
                                 tiles++;
                                 wins = 0;
                             }
@@ -72,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }else { // Incorrect
                         // Restart Game
-                        Toast.makeText(MainActivity.this, "OMG! Wrong answer, play again!",
+                        Toast.makeText(MainActivity.this, "Wrong answer, play again!",
                                 Toast.LENGTH_LONG).show();
                         loses++;
                         wins = 0;
@@ -94,9 +97,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void Init() {
+        // Get device screen
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        widthScreen = size.x;
         gridViewShow = findViewById(R.id.myGridView);
         gridViewResult = findViewById(R.id.myGridViewResult);
-        mTime = findViewById(R.id.mTime);
+        tvTime = findViewById(R.id.mTime);
         tvTiles = findViewById(R.id.mLevel);
         tvScores = findViewById(R.id.mScore);
         results = new ArrayList<>();
@@ -127,14 +135,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void CreateRandomList() {
         Random random = new Random();
+        int bound = 36;
         results.clear();
         shows.clear();
-        results.addAll(Collections.nCopies(36, false));
-        shows.addAll(results);
+        if (tiles >= 10) {
+            results.addAll(Collections.nCopies(100, false));
+            shows.addAll(results);
+            gridViewShow.setNumColumns(10);
+            gridViewResult.setNumColumns(10);
+            bound = 100;
+        }else if (tiles >= 5) {
+            results.addAll(Collections.nCopies(64, false));
+            shows.addAll(results);
+            gridViewShow.setNumColumns(8);
+            gridViewResult.setNumColumns(8);
+            bound = 64;
+        } else {
+            results.addAll(Collections.nCopies(36, false));
+            shows.addAll(results);
+            gridViewShow.setNumColumns(6);
+            gridViewResult.setNumColumns(6);
+            bound = 36;
+        }
         for (int i = 0; i < tiles; i++) {
-            int ranNum = random.nextInt(36);
+            int ranNum = random.nextInt(bound);
             while (results.get(ranNum)) {
-                ranNum = random.nextInt(36);
+                ranNum = random.nextInt(bound);
             }
             results.set(ranNum, true);
         }
@@ -143,17 +169,17 @@ public class MainActivity extends AppCompatActivity {
     private void StartTimer() {
         Timer timer = new Timer();
         time = 3;
-        mTime.setVisibility(View.VISIBLE);
+        tvTime.setVisibility(View.VISIBLE);
         timer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
                 if (time == 0) {
                     timer.cancel();
                     timer.purge();
-                    mTime.setVisibility(View.INVISIBLE);
+                    tvTime.setVisibility(View.INVISIBLE);
                     gridViewResult.setVisibility(View.INVISIBLE);
                 } else {
                     time--;
-                    mTime.setText(String.valueOf(time));
+                    tvTime.setText(String.valueOf(time));
                 }
             }
         }, 1000, 1000);
